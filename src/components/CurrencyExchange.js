@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import currencyNames from '../currencyNames.json'
   
 class CurrencyExchange extends Component {
     constructor() {
@@ -32,12 +33,10 @@ class CurrencyExchange extends Component {
                         currencies: Object.keys(result['rates']).sort(),
                         rates: Object.values(result.rates),
                         isLoaded: true
-                        // baseCurrency: "",
-                        // finalCurrency: "",
-                        // amountToConvert: "",
-                        // convertedAmount: "",
+
                     }, 
-                    // () => fetch(`https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=CAN&apikey=KPFRBODQGCDMGD3E`)
+                    // () => fetch('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=CAN&apikey=KPFRBODQGCDMGD3E')
+                    // () => fetch('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=demo')
                     // () =>  fetch(`http://data.fixer.io/api/symbols?access_key=f55714fc68544efcf79c477eded056a2`)
                     // .then(res => res.json())
                     // .then(result => {
@@ -104,8 +103,17 @@ class CurrencyExchange extends Component {
                             {Object.keys(this.state.data.rates).map((currency, key)=>
                             <option key={key} value={this.state.data.rates[currency]}> 
                             {currency} : 
+                            {currencyNames.filter(element => {
+                                // console.log(element.symbol === currency)
+                                if (element.symbol === currency) {
+                                    return element.currency_name.toString()
+                                } else {
+                                    return
+                                }
+                            })
+                            }
                             
-                            {/* {this.state.data2.symbols[currency]} */}
+                          
                             </option>  )};
                         </select> 
                 
