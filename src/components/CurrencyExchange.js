@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import currencyNames from '../currencyNames.json'
+const currencyNames = require('../currencyNames.json')
   
 class CurrencyExchange extends Component {
     constructor() {
@@ -12,43 +12,21 @@ class CurrencyExchange extends Component {
         baseCurrency: 1,
         finalCurrency: 1,
         data2: "",
-       
-        // convertedAmount: "",
-        // currencies: [],
-        // base: "",
-        // rates: "",
-
+        currencyNames
       };
     }
  
    componentDidMount () {
         fetch(`https://api.exchangeratesapi.io/latest?`)
-
             .then(res => res.json())
             .then(result => {
                 console.log(result);
-                this.setState(
-                    {
+                this.setState({
                         data: result,
                         currencies: Object.keys(result['rates']).sort(),
                         rates: Object.values(result.rates),
                         isLoaded: true
-
-                    }, 
-                    // () => fetch('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=CAN&apikey=KPFRBODQGCDMGD3E')
-                    // () => fetch('https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=demo')
-                    // () =>  fetch(`http://data.fixer.io/api/symbols?access_key=f55714fc68544efcf79c477eded056a2`)
-                    // .then(res => res.json())
-                    // .then(result => {
-                    //     console.log(result);
-                    //     this.setState(
-                    //         {
-                    //             data2: result,
-                    //             isLoaded: true
-                    //         }
-                    //     )   
-                    // })
-                )
+                })
             })
     }
 
@@ -74,9 +52,9 @@ class CurrencyExchange extends Component {
             } else if (event.target.name === "amountInverseToConvert") {
                 this.convertAmount('amountInverseToConvert')
             }
-      
         })
     }
+
     convertAmount =(para) => {
         console.log(this.state.finalCurrency)
 
@@ -89,70 +67,67 @@ class CurrencyExchange extends Component {
          
   
     render() {
-
         return(
-        <section id="exchange-section">
-        {this.state.isLoaded ? 
-            <section id="converter">
+            <div className="forex-wrap">
+                <h2 className="forex-title">Currency Converter</h2>
+                <p className="forex-byline">Use the tool below to convert any currency fast.</p>
+                    <section id="exchange-section">
+                        {this.state.isLoaded ? 
+                            <section id="converter">
+                                <div className="convert">
+                                    <h2 className="convert_h2">Convert from:</h2>
+                                    <select value={this.state.baseCurrency} onChange={this.handleSelectBaseCurrency} className="convert-drop_menu">
+                                        <option key="EURO" value="1" className="option">EUR : Euro</option>
 
-                    <div className="single-currency">
-                        <h2 className="label_currency">Convert from:</h2>
-                        <select  value={this.state.baseCurrency} onChange={this.handleSelectBaseCurrency} className="drop-menu">
-                            <option key="EURO" value="1">EUR : Euro</option>
-
-                            {Object.keys(this.state.data.rates).map((currency, key)=>
-                            <option key={key} value={this.state.data.rates[currency]}> 
-                            {currency} : 
-                            {currencyNames.filter(element => {
-                                // console.log(element.symbol === currency)
-                                if (element.symbol === currency) {
-                                    return element.currency_name.toString()
-                                } else {
-                                    return
-                                }
-                            })
-                            }
-                            
-                          
-                            </option>  )};
-                        </select> 
-                
-
-                        <h2 className="label_currency">Convert to:</h2>
-                     
-                        <select  value={this.state.finalCurrency} onChange={this.handleSelectFinalCurrency} className="drop-menu">
-                            <option key="EUR" value="1">EUR : Euro</option>
-                            {Object.keys(this.state.data.rates).map((currency, key)=>
-                            <option key={key} value={this.state.data.rates[currency]}> 
-                            {currency} : 
-                            {/* {this.state.data2.symbols[currency]}  */}
-                            </option>  )};
-                        </select>
-                    </div> 
-                    
-                {/* </div> */}
-                
-           
-                {/* <section className="amounts"> */}
-                    <div className="single-amount">
-                        <h2>Amount:</h2>
-                        <input type="number" name="amountToConvert" value={this.state.amountToConvert} onChange={this.getAmount} className="input-amount">
-                        </input>  
-                    </div>     
-
-                    <div className="single-amount">
-                        <h2>Amount:</h2>
-                        <input type="number" name="amountInverseToConvert" value={this.state.amountInverseToConvert} onChange={this.getAmount} className="input-amount"/> 
-                    </div>
-
-                {/* </section> */}
-                </section>
-                : "Loading"}
-            </section>
-           
-      );
-  }
+                                        {Object.keys(this.state.data.rates).map((currency, key)=>
+                                            <option key={key} value={this.state.data.rates[currency]}> 
+                                            {currency} : {this.state.currencyNames.map(element => {
+                                                // console.log(element.symbol === currency)
+                                                if (element.symbol === currency) {
+                                                    return element.currency_name
+                                                } 
+                                            })
+                                        }
+                                        </option>  )};
+                                    </select> 
+                                    <div className="convert-amount">
+                                        <h2 className="amount_h2">Amount:</h2>
+                                        <input type="number" name="amountToConvert" value={this.state.amountToConvert} onChange={this.getAmount} className="input-amount">
+                                        </input>  
+                                    </div> 
+                                </div>    
+                                <div className="arrows">
+                                    <img src="./arrows-blue-versetzt.png" alt="" className="convert_arrows"/>
+                                </div>
+                                
+                                <div className="convert">
+                                    <h2 className="convert_h2">Convert to:</h2>
+                                
+                                    <select  value={this.state.finalCurrency} onChange={this.handleSelectFinalCurrency} className="convert-drop_menu">
+                                        <option key="EUR" value="1" className="option">EUR : Euro</option >
+                                        {Object.keys(this.state.data.rates).map((currency, key)=>
+                                            <option key={key} value={this.state.data.rates[currency]}> 
+                                                {currency} : {this.state.currencyNames.map(element => {
+                                                    // console.log(element.symbol === currency)
+                                                    if (element.symbol === currency) {
+                                                        return element.currency_name
+                                                    } 
+                                                })
+                                                }
+                                        </option>  )};
+                                    </select>
+                                    <div className="convert-amount">
+                                        <h2 className="amount_h2">Amount:</h2>
+                                        <input type="number" name="amountInverseToConvert" value={this.state.amountInverseToConvert} onChange={this.getAmount} className="input-amount"/> 
+                                    </div>
+                                </div> 
+                        
+                            </section>
+                        : "Loading"}
+                    </section>
+            </div>  
+        );
+    }
 }
   
- 
 export default CurrencyExchange;
